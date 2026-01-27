@@ -3,51 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <title>Mini CRM Anagrafiche</title>
+  <!-- Font Awesome per icone -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    input { margin: 5px; padding: 5px; }
-    button { margin: 5px; padding: 5px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background-color: #f4f4f4; cursor: pointer; }
-    tr:nth-child(even) { background-color: #fafafa; }
-    .btn { margin: 0 5px; cursor: pointer; }
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background-color: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    form input, form button, #ricerca {
+      padding: 10px 12px;
+      margin: 5px 3px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    form button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      transition: 0.3s;
+    }
+
+    form button:hover {
+      background-color: #0056b3;
+      cursor: pointer;
+    }
+
+    #ricerca {
+      width: 100%;
+      margin: 15px 0;
+      border: 1px solid #007bff;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      padding: 12px;
+      text-align: left;
+    }
+
+    td {
+      padding: 12px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f6fc;
+    }
+
+    tr:hover {
+      background-color: #e6f0ff;
+    }
+
+    .btn {
+      padding: 5px 8px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      margin: 0 3px;
+      font-size: 13px;
+    }
+
+    .btn-modifica {
+      background-color: #28a745;
+    }
+
+    .btn-modifica:hover {
+      background-color: #1e7e34;
+    }
+
+    .btn-elimina {
+      background-color: #dc3545;
+    }
+
+    .btn-elimina:hover {
+      background-color: #a71d2a;
+    }
+
+    #messaggio {
+      text-align: center;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+
+    #messaggio.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    #messaggio.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
   </style>
 </head>
 <body>
-  <h1>Mini CRM Anagrafiche</h1>
+  <div class="container">
+    <h1>Mini CRM Anagrafiche</h1>
 
-  <!-- Form inserimento/modifica -->
-  <form id="persona-form">
-    <input type="hidden" id="persona-id">
-    <input type="text" id="nome" placeholder="Nome" required>
-    <input type="text" id="cognome" placeholder="Cognome" required>
-    <input type="email" id="email" placeholder="Email">
-    <input type="text" id="telefono" placeholder="Telefono">
-    <button type="submit">Salva</button>
-  </form>
+    <div id="messaggio"></div>
 
-  <!-- Ricerca live -->
-  <input type="text" id="ricerca" placeholder="Cerca per nome, cognome o email" style="width:100%; margin-top:10px; padding:5px;">
+    <!-- Form inserimento/modifica -->
+    <form id="persona-form">
+      <input type="hidden" id="persona-id">
+      <input type="text" id="nome" placeholder="Nome" required>
+      <input type="text" id="cognome" placeholder="Cognome" required>
+      <input type="email" id="email" placeholder="Email">
+      <input type="text" id="telefono" placeholder="Telefono">
+      <button type="submit"><i class="fa fa-floppy-disk"></i> Salva</button>
+    </form>
 
-  <!-- Tabella dati -->
-  <table id="tabella-persone">
-    <thead>
-      <tr>
-        <th data-field="nome">Nome</th>
-        <th data-field="cognome">Cognome</th>
-        <th data-field="email">Email</th>
-        <th data-field="telefono">Telefono</th>
-        <th>Azioni</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <!-- Ricerca live -->
+    <input type="text" id="ricerca" placeholder="Cerca per nome, cognome o email">
+
+    <!-- Tabella dati -->
+    <table id="tabella-persone">
+      <thead>
+        <tr>
+          <th data-field="nome">Nome</th>
+          <th data-field="cognome">Cognome</th>
+          <th data-field="email">Email</th>
+          <th data-field="telefono">Telefono</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <!-- Libreria Supabase v2 -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
-    // 🔹 Inserisci qui i tuoi dati Supabase
     const supabaseUrl = "https://bsjfusblfujdhwzpcttz.supabase.co"
     const supabaseKey = "sb_publishable_hdyPW-z1J3ILrBMO7Mnhjg_euv2yPGu"
     const { createClient } = supabase
@@ -57,10 +175,10 @@
     const tbody = document.querySelector("#tabella-persone tbody")
     const inputId = document.getElementById("persona-id")
     const ricercaInput = document.getElementById("ricerca")
+    const messaggioDiv = document.getElementById("messaggio")
 
-    let persone = []  // array locale per ordinamento
+    let persone = []
 
-    // 🔹 Mostra i dati nella tabella
     function mostraTabella(data) {
       tbody.innerHTML = ""
       data.forEach(p => {
@@ -71,15 +189,21 @@
           <td>${p.email || ""}</td>
           <td>${p.telefono || ""}</td>
           <td>
-            <button class="btn" onclick="modificaPersona(${p.id})">Modifica</button>
-            <button class="btn" onclick="eliminaPersona(${p.id})">Elimina</button>
+            <button class="btn btn-modifica" onclick="modificaPersona(${p.id})"><i class="fa fa-pencil"></i> Modifica</button>
+            <button class="btn btn-elimina" onclick="eliminaPersona(${p.id})"><i class="fa fa-trash"></i> Elimina</button>
           </td>
         `
         tbody.appendChild(tr)
       })
     }
 
-    // 🔹 Ricerca live
+    function mostraMessaggio(msg, tipo="success") {
+      messaggioDiv.textContent = msg
+      messaggioDiv.className = tipo === "success" ? "success" : "error"
+      messaggioDiv.style.display = "block"
+      setTimeout(() => messaggioDiv.style.display = "none", 3000)
+    }
+
     ricercaInput.addEventListener("input", () => {
       const query = ricercaInput.value.toLowerCase()
       const filtrati = persone.filter(p =>
@@ -90,7 +214,6 @@
       mostraTabella(filtrati)
     })
 
-    // 🔹 Modifica persona
     window.modificaPersona = (id) => {
       const p = persone.find(x => x.id === id)
       inputId.value = p.id
@@ -100,15 +223,18 @@
       document.getElementById("telefono").value = p.telefono || ""
     }
 
-    // 🔹 Elimina persona
     window.eliminaPersona = async (id) => {
       if (!confirm("Vuoi davvero eliminare questa persona?")) return
       const { error } = await supabaseClient.from("persone").delete().eq("id", id)
-      if (error) console.error("Errore DELETE:", error)
-      caricaPersone()
+      if (error) {
+        console.error(error)
+        mostraMessaggio("Errore durante l'eliminazione", "error")
+      } else {
+        mostraMessaggio("Persona eliminata!")
+        caricaPersone()
+      }
     }
 
-    // 🔹 Gestione submit (inserimento o modifica)
     form.addEventListener("submit", async (e) => {
       e.preventDefault()
       const nome = document.getElementById("nome").value
@@ -119,10 +245,20 @@
 
       if (id) {
         const { error } = await supabaseClient.from("persone").update({ nome, cognome, email, telefono }).eq("id", id)
-        if (error) console.error("Errore UPDATE:", error)
+        if (error) {
+          console.error(error)
+          mostraMessaggio("Errore durante la modifica", "error")
+        } else {
+          mostraMessaggio("Persona modificata!")
+        }
       } else {
         const { error } = await supabaseClient.from("persone").insert([{ nome, cognome, email, telefono }])
-        if (error) console.error("Errore INSERT:", error)
+        if (error) {
+          console.error(error)
+          mostraMessaggio("Errore durante l'inserimento", "error")
+        } else {
+          mostraMessaggio("Persona aggiunta!")
+        }
       }
 
       form.reset()
@@ -130,7 +266,6 @@
       caricaPersone()
     })
 
-    // 🔹 Ordinamento colonna
     document.querySelectorAll("#tabella-persone th[data-field]").forEach(th => {
       th.addEventListener("click", () => {
         const field = th.getAttribute("data-field")
@@ -142,7 +277,6 @@
       })
     })
 
-    // 🔹 Carica persone dal DB
     async function caricaPersone() {
       const { data, error } = await supabaseClient.from("persone").select("*")
       if (error) return console.error("Errore SELECT:", error)
@@ -154,3 +288,4 @@
   </script>
 </body>
 </html>
+
