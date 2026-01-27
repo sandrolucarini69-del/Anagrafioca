@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini CRM Anagrafiche</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input { margin: 5px; padding: 5px; }
+    button { margin: 5px; padding: 5px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f4f4f4; cursor: pointer; }
+    tr:nth-child(even) { background-color: #fafafa; }
+    .btn { margin: 0 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Mini CRM Anagrafiche</h1>
+
+  <!-- Form inserimento/modifica -->
+  <form id="persona-form">
+    <input type="hidden" id="persona-id">
+    <input type="text" id="nome" placeholder="Nome" required>
+    <input type="text" id="cognome" placeholder="Cognome" required>
+    <input type="email" id="email" placeholder="Email">
+    <input type="text" id="telefono" placeholder="Telefono">
+    <button type="submit">Salva</button>
+  </form>
+
+  <!-- Ricerca live -->
+  <input type="text" id="ricerca" placeholder="Cerca per nome, cognome o email" style="width:100%; margin-top:10px; padding:5px;">
+
+  <!-- Tabella dati -->
+  <table id="tabella-persone">
+    <thead>
+      <tr>
+        <th data-field="nome">Nome</th>
+        <th data-field="cognome">Cognome</th>
+        <th data-field="email">Email</th>
+        <th data-field="telefono">Telefono</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Libreria Supabase v2 -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    // 🔹 Inserisci qui i tuoi dati Supabase
+    const supabaseUrl = "https://bsjfusblfujdhwzpcttz.supabase.co"
+    const supabaseKey = "sb_publishable_hdyPW-z1J3ILrBMO7Mnhjg_euv2yPGu"
+    const { createClient } = supabase
+    const supabaseClient = createClient(supabaseUrl, supabaseKey)
+
+    const form = document.getElementById("persona-form")
+    const tbody = document.querySelector("#tabella-persone tbody")
+    const inputId = document.getElementById("persona-id")
+    const ricercaInput = document.getElementById("ricerca")
+
+    let persone = []  // array locale per ordinamento
+
+    // 🔹 Mostra i dati nella tabella
+    function mostraTabella(data) {
+      tbody.innerHTML = ""
+      data.forEach(p => {
+        const tr = document.createElement("tr")
+        tr.innerHTML = `
+          <td>${p.nome}</td>
+          <td>${p.cognome}</td>
+          <td>${p.email || ""}</td>
+          <td>${p.telefono || ""}</td>
+          <td>
+            <button class="btn" onclick="modificaPersona(${p.id})">Modifica</button>
+            <button class="btn" onclick="eliminaPersona(${p.id})">Elimina</button>
+          </td>
+        `
+        tbody.appendChild(tr)
+      })
+    }
+
+    // 🔹 Ricerca live
+    ricercaInput.addEventListener("input", () => {
+      const query = ricercaInput.value.toLowerCase()
+      const filtrati = persone.filter(p =>
+        (p.nome && p.nome.toLowerCase().includes(query)) ||
+        (p.cognome && p.cognome.toLowerCase().includes(query)) ||
+        (p.email && p.email.toLowerCase().includes(query))
+      )
+      mostraTabella(filtrati)
+    })
+
+    // 🔹 Modifica persona
+    window.modificaPersona = (id) => {
+      const p = persone.find(x => x.id === id)
+      inputId.value = p.id
+      document.getElementById("nome").value = p.nome
+      document.getElementById("cognome").value = p.cognome
+      document.getElementById("email").value = p.email || ""
+      document.getElementById("telefono").value = p.telefono || ""
+    }
+
+    // 🔹 Elimina persona
+    window.eliminaPersona = async (id) => {
+      if (!confirm("Vuoi davvero eliminare questa persona?")) return
+      const { error } = await supabaseClient.from("persone").delete().eq("id", id)
+      if (error) console.error("Errore DELETE:", error)
+      caricaPersone()
+    }
+
+    // 🔹 Gestione submit (inserimento o modifica)
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault()
+      const nome = document.getElementById("nome").value
+      const cognome = document.getElementById("cognome").value
+      const email = document.getElementById("email").value
+      const telefono = document.getElementById("telefono").value
+      const id = inputId.value
+
+      if (id) {
+        const { error } = await supabaseClient.from("persone").update({ nome, cognome, email, telefono }).eq("id", id)
+        if (error) console.error("Errore UPDATE:", error)
+      } else {
+        const { error } = await supabaseClient.from("persone").insert([{ nome, cognome, email, telefono }])
+        if (error) console.error("Errore INSERT:", error)
+      }
+
+      form.reset()
+      inputId.value = ""
+      caricaPersone()
+    })
+
+    // 🔹 Ordinamento colonna
+    document.querySelectorAll("#tabella-persone th[data-field]").forEach(th => {
+      th.addEventListener("click", () => {
+        const field = th.getAttribute("data-field")
+        const ordinato = [...persone].sort((a, b) => {
+          if (a[field] && b[field]) return a[field].localeCompare(b[field])
+          return 0
+        })
+        mostraTabella(ordinato)
+      })
+    })
+
+    // 🔹 Carica persone dal DB
+    async function caricaPersone() {
+      const { data, error } = await supabaseClient.from("persone").select("*")
+      if (error) return console.error("Errore SELECT:", error)
+      persone = data
+      mostraTabella(persone)
+    }
+
+    caricaPersone()
+  </script>
+</body>
+</html>
