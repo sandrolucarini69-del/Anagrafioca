@@ -2,290 +2,223 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Mini CRM Anagrafiche</title>
-  <!-- Font Awesome per icone -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Mini CRM con Login</title>
 
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background-color: #f0f4f8;
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
       margin: 0;
       padding: 0;
     }
 
-    .container {
+    .box {
       max-width: 900px;
       margin: 40px auto;
-      background-color: white;
-      padding: 20px 30px;
+      background: white;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    h1 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 20px;
+    h2 { text-align: center; }
+
+    input, button {
+      padding: 10px;
+      margin: 5px;
     }
 
-    form input, form button, #ricerca {
-      padding: 10px 12px;
-      margin: 5px 3px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    form button {
-      background-color: #007bff;
+    button {
+      background: #007bff;
       color: white;
       border: none;
-      transition: 0.3s;
-    }
-
-    form button:hover {
-      background-color: #0056b3;
+      border-radius: 5px;
       cursor: pointer;
     }
 
-    #ricerca {
-      width: 100%;
-      margin: 15px 0;
-      border: 1px solid #007bff;
-    }
+    button:hover { background: #0056b3; }
 
     table {
-      border-collapse: collapse;
       width: 100%;
-      background-color: white;
-      border-radius: 8px;
-      overflow: hidden;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
     }
 
     th {
-      background-color: #007bff;
+      background: #007bff;
       color: white;
-      cursor: pointer;
-      padding: 12px;
-      text-align: left;
     }
 
-    td {
-      padding: 12px;
+    .btn-del {
+      background: #dc3545;
     }
 
-    tr:nth-child(even) {
-      background-color: #f2f6fc;
-    }
-
-    tr:hover {
-      background-color: #e6f0ff;
-    }
-
-    .btn {
-      padding: 5px 8px;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      cursor: pointer;
-      margin: 0 3px;
-      font-size: 13px;
-    }
-
-    .btn-modifica {
-      background-color: #28a745;
-    }
-
-    .btn-modifica:hover {
-      background-color: #1e7e34;
-    }
-
-    .btn-elimina {
-      background-color: #dc3545;
-    }
-
-    .btn-elimina:hover {
-      background-color: #a71d2a;
-    }
-
-    #messaggio {
-      text-align: center;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
+    .hidden {
       display: none;
     }
-
-    #messaggio.success {
-      background-color: #d4edda;
-      color: #155724;
-    }
-
-    #messaggio.error {
-      background-color: #f8d7da;
-      color: #721c24;
-    }
-
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Mini CRM Anagrafiche</h1>
 
-    <div id="messaggio"></div>
+<!-- LOGIN -->
+<div id="loginBox" class="box">
+  <h2>Login</h2>
+  <input id="loginEmail" type="email" placeholder="Email"><br>
+  <input id="loginPassword" type="password" placeholder="Password"><br>
+  <button onclick="login()">Accedi</button>
+</div>
 
-    <!-- Form inserimento/modifica -->
-    <form id="persona-form">
-      <input type="hidden" id="persona-id">
-      <input type="text" id="nome" placeholder="Nome" required>
-      <input type="text" id="cognome" placeholder="Cognome" required>
-      <input type="email" id="email" placeholder="Email">
-      <input type="text" id="telefono" placeholder="Telefono">
-      <button type="submit"><i class="fa fa-floppy-disk"></i> Salva</button>
-    </form>
+<!-- APP -->
+<div id="appBox" class="box hidden">
+  <h2>Mini CRM</h2>
+  <button onclick="logout()" style="float:right;background:#dc3545">Logout</button>
 
-    <!-- Ricerca live -->
-    <input type="text" id="ricerca" placeholder="Cerca per nome, cognome o email">
+  <!-- FORM (solo admin) -->
+  <form id="formPersona">
+    <input id="nome" placeholder="Nome" required>
+    <input id="cognome" placeholder="Cognome" required>
+    <input id="email" placeholder="Email">
+    <input id="telefono" placeholder="Telefono">
+    <button type="submit">Salva</button>
+  </form>
 
-    <!-- Tabella dati -->
-    <table id="tabella-persone">
-      <thead>
-        <tr>
-          <th data-field="nome">Nome</th>
-          <th data-field="cognome">Cognome</th>
-          <th data-field="email">Email</th>
-          <th data-field="telefono">Telefono</th>
-          <th>Azioni</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  <!-- TABELLA -->
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Cognome</th>
+        <th>Email</th>
+        <th>Telefono</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
 
-  <!-- Libreria Supabase v2 -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script>
-    const supabaseUrl = "https://bsjfusblfujdhwzpcttz.supabase.co"
-    const supabaseKey = "sb_publishable_hdyPW-z1J3ILrBMO7Mnhjg_euv2yPGu"
-    const { createClient } = supabase
-    const supabaseClient = createClient(supabaseUrl, supabaseKey)
+<!-- ✅ SUPABASE (UMD, STABILE) -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    const form = document.getElementById("persona-form")
-    const tbody = document.querySelector("#tabella-persone tbody")
-    const inputId = document.getElementById("persona-id")
-    const ricercaInput = document.getElementById("ricerca")
-    const messaggioDiv = document.getElementById("messaggio")
+<script>
+/* ================= CONFIG ================= */
+const supabaseUrl = "https://bsjfusblfujdhwzpcttz.supabase.co";
+const supabaseKey = "sb_publishable_hdyPW-z1J3ILrBMO7Mnhjg_euv2yPGu";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-    let persone = []
+/* ================= VARIABILI ================= */
+const loginBox = document.getElementById("loginBox");
+const appBox = document.getElementById("appBox");
+const tbody = document.getElementById("tbody");
+const form = document.getElementById("formPersona");
 
-    function mostraTabella(data) {
-      tbody.innerHTML = ""
-      data.forEach(p => {
-        const tr = document.createElement("tr")
-        tr.innerHTML = `
-          <td>${p.nome}</td>
-          <td>${p.cognome}</td>
-          <td>${p.email || ""}</td>
-          <td>${p.telefono || ""}</td>
-          <td>
-            <button class="btn btn-modifica" onclick="modificaPersona(${p.id})"><i class="fa fa-pencil"></i> Modifica</button>
-            <button class="btn btn-elimina" onclick="eliminaPersona(${p.id})"><i class="fa fa-trash"></i> Elimina</button>
-          </td>
-        `
-        tbody.appendChild(tr)
-      })
-    }
+let ruolo = "viewer";
 
-    function mostraMessaggio(msg, tipo="success") {
-      messaggioDiv.textContent = msg
-      messaggioDiv.className = tipo === "success" ? "success" : "error"
-      messaggioDiv.style.display = "block"
-      setTimeout(() => messaggioDiv.style.display = "none", 3000)
-    }
+/* ================= LOGIN ================= */
+async function login() {
+  const email = loginEmail.value;
+  const password = loginPassword.value;
 
-    ricercaInput.addEventListener("input", () => {
-      const query = ricercaInput.value.toLowerCase()
-      const filtrati = persone.filter(p =>
-        (p.nome && p.nome.toLowerCase().includes(query)) ||
-        (p.cognome && p.cognome.toLowerCase().includes(query)) ||
-        (p.email && p.email.toLowerCase().includes(query))
-      )
-      mostraTabella(filtrati)
-    })
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
 
-    window.modificaPersona = (id) => {
-      const p = persone.find(x => x.id === id)
-      inputId.value = p.id
-      document.getElementById("nome").value = p.nome
-      document.getElementById("cognome").value = p.cognome
-      document.getElementById("email").value = p.email || ""
-      document.getElementById("telefono").value = p.telefono || ""
-    }
+  if (error) {
+    alert("Login fallito: " + error.message);
+    return;
+  }
 
-    window.eliminaPersona = async (id) => {
-      if (!confirm("Vuoi davvero eliminare questa persona?")) return
-      const { error } = await supabaseClient.from("persone").delete().eq("id", id)
-      if (error) {
-        console.error(error)
-        mostraMessaggio("Errore durante l'eliminazione", "error")
-      } else {
-        mostraMessaggio("Persona eliminata!")
-        caricaPersone()
-      }
-    }
+  // 🔐 carica profilo
+  const { data: profile, error: profileError } = await supabaseClient
+    .from("profiles")
+    .select("role")
+    .eq("id", data.user.id)
+    .single();
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault()
-      const nome = document.getElementById("nome").value
-      const cognome = document.getElementById("cognome").value
-      const email = document.getElementById("email").value
-      const telefono = document.getElementById("telefono").value
-      const id = inputId.value
+  if (!profile) {
+    alert(
+      "Profilo utente NON trovato.\n" +
+      "Chiedi all'amministratore di assegnarti un ruolo."
+    );
+    return;
+  }
 
-      if (id) {
-        const { error } = await supabaseClient.from("persone").update({ nome, cognome, email, telefono }).eq("id", id)
-        if (error) {
-          console.error(error)
-          mostraMessaggio("Errore durante la modifica", "error")
-        } else {
-          mostraMessaggio("Persona modificata!")
+  ruolo = profile.role;
+
+  loginBox.classList.add("hidden");
+  appBox.classList.remove("hidden");
+
+  if (ruolo !== "admin") {
+    form.style.display = "none";
+  }
+
+  caricaPersone();
+}
+
+/* ================= LOGOUT ================= */
+async function logout() {
+  await supabaseClient.auth.signOut();
+  location.reload();
+}
+
+/* ================= CRUD ================= */
+async function caricaPersone() {
+  const { data, error } = await supabaseClient
+    .from("persone")
+    .select("*")
+    .order("id");
+
+  if (error) {
+    alert("Errore caricamento dati");
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  data.forEach(p => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.nome}</td>
+      <td>${p.cognome}</td>
+      <td>${p.email || ""}</td>
+      <td>${p.telefono || ""}</td>
+      <td>
+        ${ruolo === "admin"
+          ? `<button class="btn-del" onclick="elimina(${p.id})">Elimina</button>`
+          : ""
         }
-      } else {
-        const { error } = await supabaseClient.from("persone").insert([{ nome, cognome, email, telefono }])
-        if (error) {
-          console.error(error)
-          mostraMessaggio("Errore durante l'inserimento", "error")
-        } else {
-          mostraMessaggio("Persona aggiunta!")
-        }
-      }
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
 
-      form.reset()
-      inputId.value = ""
-      caricaPersone()
-    })
+async function elimina(id) {
+  if (!confirm("Vuoi eliminare questa persona?")) return;
+  await supabaseClient.from("persone").delete().eq("id", id);
+  caricaPersone();
+}
 
-    document.querySelectorAll("#tabella-persone th[data-field]").forEach(th => {
-      th.addEventListener("click", () => {
-        const field = th.getAttribute("data-field")
-        const ordinato = [...persone].sort((a, b) => {
-          if (a[field] && b[field]) return a[field].localeCompare(b[field])
-          return 0
-        })
-        mostraTabella(ordinato)
-      })
-    })
+form.addEventListener("submit", async e => {
+  e.preventDefault();
 
-    async function caricaPersone() {
-      const { data, error } = await supabaseClient.from("persone").select("*")
-      if (error) return console.error("Errore SELECT:", error)
-      persone = data
-      mostraTabella(persone)
-    }
+  await supabaseClient.from("persone").insert([{
+    nome: nome.value,
+    cognome: cognome.value,
+    email: email.value,
+    telefono: telefono.value
+  }]);
 
-    caricaPersone()
-  </script>
+  form.reset();
+  caricaPersone();
+});
+</script>
+
 </body>
 </html>
-
