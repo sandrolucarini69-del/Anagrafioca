@@ -1,100 +1,178 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Agesci Calderara di Reno 1</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      margin: 0;
-      padding: 0;
-    }
-
-    .box {
-      max-width: 900px;
-      margin: 40px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    h2 { text-align: center; }
-
-    input, button {
-      padding: 10px;
-      margin: 5px;
-    }
-
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover { background: #0056b3; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-    }
-
-    th {
-      background: #007bff;
-      color: white;
-    }
-
-    .btn-del {
-      background: #dc3545;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Agesci Calderara di Reno 1</title>
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f4f8;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-top: 40px;
+}
+.box {
+  background: #fff;
+  padding: 30px 25px 40px 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  max-width: 900px;
+  width: 100%;
+  position: relative;
+}
+.hidden { display: none; }
+h2 { text-align: center; margin-bottom: 10px; }
+h3 { text-align: center; margin-bottom: 25px; font-weight: normal; color: #555; }
+/* HEADER CON LOGO */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 10px;
+}
+.header .logo {
+  height: 50px;
+  position: absolute;
+  left: 0;
+}
+/* INPUT UNIFICATI */
+input {
+  display: block;
+  width: 100%;
+  max-width: 250px;
+  margin: 10px auto;
+  padding: 12px 15px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: 0.2s;
+}
+input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.3);
+  outline: none;
+}
+/* LOGIN BOX */
+#loginBox .form-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+/* PULSANTI */
+.btn {
+  padding: 10px 22px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn:hover { opacity: 0.9; }
+.btn-save { background: #007bff; color: white; }
+.btn-cancel { background: #dc3545; color: white; }
+.btn-del { background: #dc3545; color: white; }
+.btn-modifica { background: #28a745; color: white; }
+.btn-logout { background: #dc3545; color: white; position: absolute; top: 20px; right: 20px; padding: 10px 20px; border-radius: 8px; }
+/* FORM CRM */
+form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 15px;
+}
+.form-buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+#search {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 15px 0;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+/* TABELLA */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+th {
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+}
+th:hover { opacity: 0.85; }
+</style>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="loginBox" class="box">
-  <h2>Login</h2>
-  <input id="loginEmail" type="email" placeholder="Email"><br>
-  <input id="loginPassword" type="password" placeholder="Password"><br>
-  <button onclick="login()">Accedi</button>
+  <div class="header">
+    <img src="logo.png" alt="Logo" class="logo">
+    <h2>Agesci Calderara di Reno 1</h2>
+  </div>
+  <h3>Login</h3>
+  <input id="loginEmail" type="email" placeholder="Email">
+  <input id="loginPassword" type="password" placeholder="Password">
+  <div class="form-buttons">
+    <button onclick="login()" class="btn btn-save">Accedi</button>
+  </div>
 </div>
 
 <!-- APP -->
 <div id="appBox" class="box hidden">
-  <h2>Agesci Calderara di Reno 1</h2>
-  <button onclick="logout()" style="float:right;background:#dc3545">Logout</button>
+  <div class="header">
+    <img src="logo.png" alt="Logo" class="logo">
+    <h2>Agesci Calderara di Reno 1</h2>
+  </div>
+  <button onclick="logout()" class="btn-logout">Logout</button>
 
-  <!-- FORM (solo admin) -->
+  <!-- FORM -->
   <form id="formPersona">
     <input id="nome" placeholder="Nome" required>
     <input id="cognome" placeholder="Cognome" required>
-    <input id="email" placeholder="Email">
-    <input id="telefono" placeholder="Telefono">
-    <button type="submit">Salva</button>
+    <input id="codiceSocio" placeholder="Codice Socio" required>
+    <input id="branca" placeholder="Branca">
+    <div class="form-buttons">
+      <button type="submit" class="btn btn-save">Salva</button>
+      <button type="button" class="btn btn-cancel" onclick="annulla()">Annulla</button>
+    </div>
   </form>
 
-  <!-- TABELLA -->
+  <!-- IMPORTA CSV SOLO PER ADMIN -->
+  <div id="csvSection" style="margin:15px 0; display:none; text-align:center;">
+    <input type="file" id="csvFile" accept=".csv">
+    <br>
+    <button class="btn btn-save" style="margin-top:8px;" onclick="importaCSV()">Importa CSV</button>
+  </div>
+
+  <input id="search" placeholder="Cerca..." onkeyup="filtra()">
+
+  <!-- CONTATORE SOCI -->
+  <div id="sociCount" style="text-align:right; margin-bottom:5px; font-weight:bold;"></div>
+
   <table>
     <thead>
       <tr>
-        <th>Nome</th>
-        <th>Cognome</th>
-        <th>Email</th>
-        <th>Telefono</th>
+        <th onclick="ordina('nome')">Nome</th>
+        <th onclick="ordina('cognome')">Cognome</th>
+        <th onclick="ordina('codiceSocio')">Codice Socio</th>
+        <th onclick="ordina('branca')">Branca</th>
         <th>Azioni</th>
       </tr>
     </thead>
@@ -102,128 +180,190 @@
   </table>
 </div>
 
-<!-- ✅ SUPABASE (UMD, STABILE) -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-
 <script>
-/* ================= CONFIG ================= */
 const supabaseUrl = "https://bsjfusblfujdhwzpcttz.supabase.co";
 const supabaseKey = "sb_publishable_hdyPW-z1J3ILrBMO7Mnhjg_euv2yPGu";
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-/* ================= VARIABILI ================= */
 const loginBox = document.getElementById("loginBox");
 const appBox = document.getElementById("appBox");
 const tbody = document.getElementById("tbody");
 const form = document.getElementById("formPersona");
+const csvSection = document.getElementById("csvSection");
 
 let ruolo = "viewer";
+let editId = null;
+let persone = [];
 
-/* ================= LOGIN ================= */
+let sortCol = null;
+let sortAsc = true;
+
 async function login() {
   const email = loginEmail.value;
   const password = loginPassword.value;
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (error) return alert(error.message);
 
-  if (error) {
-    alert("Login fallito: " + error.message);
-    return;
-  }
-
-  // 🔐 carica profilo
-  const { data: profile, error: profileError } = await supabaseClient
-    .from("profiles")
-    .select("role")
-    .eq("id", data.user.id)
-    .single();
-
-  if (!profile) {
-    alert(
-      "Profilo utente NON trovato.\n" +
-      "Chiedi all'amministratore di assegnarti un ruolo."
-    );
-    return;
-  }
+  const { data: profile } = await supabaseClient.from("profiles").select("role").eq("id", data.user.id).single();
+  if (!profile) return alert("Profilo non trovato");
 
   ruolo = profile.role;
-
   loginBox.classList.add("hidden");
   appBox.classList.remove("hidden");
 
-  if (ruolo !== "admin") {
-    form.style.display = "none";
-  }
+  if (ruolo !== "admin") form.style.display = "none";
+  if (ruolo === "admin") csvSection.style.display = "block";
 
   caricaPersone();
 }
 
-/* ================= LOGOUT ================= */
 async function logout() {
   await supabaseClient.auth.signOut();
   location.reload();
 }
 
-/* ================= CRUD ================= */
 async function caricaPersone() {
-  const { data, error } = await supabaseClient
-    .from("persone")
-    .select("*")
-    .order("id");
+  const { data, error } = await supabaseClient.from("persone").select("*").order("id");
+  if (error) return alert("Errore caricamento");
 
-  if (error) {
-    alert("Errore caricamento dati");
-    return;
-  }
+  persone = data;
+  render(persone);
+}
 
+function render(lista) {
   tbody.innerHTML = "";
+  const brancheCount = {};
 
-  data.forEach(p => {
+  lista.forEach(p => {
+    const b = p.branca || "Non assegnata";
+    brancheCount[b] = (brancheCount[b] || 0) + 1;
+
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${p.nome}</td>
       <td>${p.cognome}</td>
-      <td>${p.email || ""}</td>
-      <td>${p.telefono || ""}</td>
+      <td>${p.codiceSocio}</td>
+      <td>${p.branca || ""}</td>
       <td>
-        ${ruolo === "admin"
-          ? `<button class="btn-del" onclick="elimina(${p.id})">Elimina</button>`
-          : ""
-        }
+        ${ruolo==="admin"?`
+          <div style="display:flex; gap:5px;">
+            <button class="btn btn-modifica" onclick="modifica(${p.id}, '${p.nome}', '${p.cognome}', '${p.codiceSocio}', '${p.branca||""}')">Modifica</button>
+            <button class="btn btn-del" onclick="elimina(${p.id})">Elimina</button>
+          </div>` : ""}
       </td>
     `;
     tbody.appendChild(tr);
   });
+
+  // aggiorna contatore totale e per branca
+  let testo = "Totale soci: " + lista.length;
+  for (const b in brancheCount) {
+    testo += ` | ${b}: ${brancheCount[b]}`;
+  }
+  document.getElementById("sociCount").textContent = testo;
+}
+
+function filtra() {
+  const q = search.value.toLowerCase();
+  const filtrati = persone.filter(p =>
+    (p.nome || "").toLowerCase().includes(q) ||
+    (p.cognome || "").toLowerCase().includes(q) ||
+    (p.codiceSocio || "").toLowerCase().includes(q) ||
+    (p.branca || "").toLowerCase().includes(q)
+  );
+  render(filtrati);
+}
+
+function ordina(col) {
+  if (sortCol === col) {
+    sortAsc = !sortAsc;
+  } else {
+    sortCol = col;
+    sortAsc = true;
+  }
+
+  persone.sort((a,b) => {
+    const valA = (a[col] || "").toString().toLowerCase();
+    const valB = (b[col] || "").toString().toLowerCase();
+    if (valA < valB) return sortAsc ? -1 : 1;
+    if (valA > valB) return sortAsc ? 1 : -1;
+    return 0;
+  });
+  render(persone);
+}
+
+function modifica(id, nomeP, cognomeP, codiceSocioP, brancaP) {
+  editId = id;
+  nome.value = nomeP;
+  cognome.value = cognomeP;
+  codiceSocio.value = codiceSocioP;
+  branca.value = brancaP;
+  form.querySelector("button[type='submit']").textContent = "Aggiorna";
 }
 
 async function elimina(id) {
-  if (!confirm("Vuoi eliminare questa persona?")) return;
+  if (!confirm("Eliminare questa persona?")) return;
   await supabaseClient.from("persone").delete().eq("id", id);
   caricaPersone();
 }
 
 form.addEventListener("submit", async e => {
   e.preventDefault();
-
-  await supabaseClient.from("persone").insert([{
+  const dati = {
     nome: nome.value,
     cognome: cognome.value,
-    email: email.value,
-    telefono: telefono.value
-  }]);
-
+    codiceSocio: codiceSocio.value,
+    branca: branca.value
+  };
+  if (editId) {
+    await supabaseClient.from("persone").update(dati).eq("id", editId);
+    editId = null;
+    form.querySelector("button[type='submit']").textContent = "Salva";
+  } else {
+    await supabaseClient.from("persone").insert([dati]);
+  }
   form.reset();
   caricaPersone();
 });
-</script>
 
+function annulla() {
+  editId = null;
+  form.reset();
+  form.querySelector("button[type='submit']").textContent = "Salva";
+}
+
+/* IMPORTA CSV SOLO ADMIN */
+async function importaCSV() {
+  if (ruolo !== "admin") return alert("Solo admin può importare CSV!");
+  const fileInput = document.getElementById("csvFile");
+  const file = fileInput.files[0];
+  if (!file) return alert("Seleziona un file CSV!");
+  const text = await file.text();
+  const righe = text.split(/\r?\n/).filter(r => r.trim() !== "");
+  righe.shift(); // intestazione
+
+  const datiDaInserire = righe.map(riga => {
+    const valori = riga.split(";");
+    return {
+      nome: valori[0]?.trim() || "",
+      cognome: valori[1]?.trim() || "",
+      codiceSocio: valori[2]?.trim() || "",
+      branca: valori[3]?.trim() || ""
+    };
+  });
+
+  try {
+    const { error } = await supabaseClient.from("persone").insert(datiDaInserire);
+    if (error) throw error;
+    alert("CSV importato con successo!");
+    fileInput.value = "";
+    caricaPersone();
+  } catch(err) {
+    alert("Errore importando CSV: " + err.message);
+  }
+}
+</script>
 </body>
 </html>
-
-
-
-
-
